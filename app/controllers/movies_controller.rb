@@ -1,6 +1,8 @@
 class MoviesController < ApplicationController
 
   def show
+    #session[:filter] = params[:filter]
+    #session[:ratings] = params[:ratings]
     id = params[:id] # retrieve movie ID from URI route
     @movie = Movie.find(id) # look up movie by unique ID
     
@@ -8,6 +10,20 @@ class MoviesController < ApplicationController
   end
 
   def index
+    
+    #redirect_to movies_path({:filter => session[:filter], :ratings => session[:ratings]}) if (params[:filter].blank? && session[:filter].present?) || (params[:ratings].blank? && session[:ratings].present?) 
+    session[:params] ||= {}
+    temp = session[:params]
+
+    redirect_to movies_path({:filter => temp[:filter], :ratings => temp[:ratings]}) if (params[:filter].blank? && temp[:filter].present?) || (params[:ratings].blank? && temp[:ratings].present?)
+
+    params[:filter] = temp[:filter] if params[:filter].nil?
+    params[:ratings] = temp[:ratings] if params[:ratings].nil?
+
+    session[:params] = {:filter => params[:filter], :ratings => params[:ratings]}
+    params = session[:params]
+    
+    
     @all_ratings = Movie.all_ratings()
     @ratings_to_show = Movie.filtered_ratings(params[:ratings])
     if @ratings_to_show != []
