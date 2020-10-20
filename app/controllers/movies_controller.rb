@@ -12,7 +12,7 @@ class MoviesController < ApplicationController
   def index
     
     #redirect_to movies_path({:filter => session[:filter], :ratings => session[:ratings]}) if (params[:filter].blank? && session[:filter].present?) || (params[:ratings].blank? && session[:ratings].present?) 
-    session[:params] ||= {}
+    
     #temp = session[:params]
 
     #redirect_to movies_path({:filter => temp[:filter], :ratings => temp[:ratings]}) if (params[:filter].blank? && temp[:filter].present?) || (params[:ratings].blank? && temp[:ratings].present?)
@@ -22,9 +22,9 @@ class MoviesController < ApplicationController
 
     #session[:params] = {:filter => params[:filter], :ratings => params[:ratings]}
     #params = session[:params]
-    #if (params[:filter].blank? && session[:filter].present?) || (params[:ratings].blank? && session[:ratings].present?)
-      #redirect_to movies_path(:filter => session[:filter], :ratings => session[:ratings])
-    #end
+    if (params[:filter].blank? && session[:filter].present?) && (params[:ratings].blank? && session[:ratings].present?)
+      redirect_to movies_path(:filter => session[:filter], :ratings => session[:ratings])
+    end
     
     params[:filter] = session[:filter] if params[:filter].nil?
     params[:ratings] = session[:ratings] if params[:ratings].nil?
