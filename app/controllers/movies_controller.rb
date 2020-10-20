@@ -11,31 +11,17 @@ class MoviesController < ApplicationController
 
   def index
     
-    #redirect_to movies_path({:filter => session[:filter], :ratings => session[:ratings]}) if (params[:filter].blank? && session[:filter].present?) || (params[:ratings].blank? && session[:ratings].present?) 
-    
-    #temp = session[:params]
 
-    #redirect_to movies_path({:filter => temp[:filter], :ratings => temp[:ratings]}) if (params[:filter].blank? && temp[:filter].present?) || (params[:ratings].blank? && temp[:ratings].present?)
-
-    #params[:filter] = temp[:filter] if params[:filter].nil?
-    #params[:ratings] = temp[:ratings] if params[:ratings].nil?
-
-    #session[:params] = {:filter => params[:filter], :ratings => params[:ratings]}
-    #params = session[:params]
-    #if (params[:filter].blank? && session[:filter].present?) && (params[:ratings].blank? && session[:ratings].present?)
-     # redirect_to movies_path(:filter => session[:filter], :ratings => session[:ratings])
-    #end
     filter = params[:filter] || session[:filter]
     ratings = params[:ratings] || session[:ratings]
     
-  
-    #params[:filter] = session[:filter] if params[:filter].nil?
-    #params[:ratings] = session[:ratings] if params[:ratings].nil?
-    
-    #session[:filter] = params[:filter]
-    #session[:ratings] = params[:ratings]
     @all_ratings = Movie.all_ratings()
-    @ratings_to_show = Movie.filtered_ratings(ratings)
+    if ratings.blank?
+      @ratings_to_show = Movie.filtered_ratings(Hash[@all_ratings.collect { | item| [ item, 1] } ])
+    else
+      @ratings_to_show = Movie.filtered_ratings(ratings)
+    end
+    
     if @ratings_to_show != []
       new_ratings = @ratings_to_show
     else
@@ -55,11 +41,7 @@ class MoviesController < ApplicationController
       session[:ratings] = ratings
       redirect_to :filter => filter, :ratings => ratings and return
     end
-#     if @ratings_to_show != []
-#       @movies = Movie.with_ratings(@ratings_to_show)
-#     else
-#       @movies = Movie.with_ratings(@all_ratings)
-#     end
+
   end
 
   def new
